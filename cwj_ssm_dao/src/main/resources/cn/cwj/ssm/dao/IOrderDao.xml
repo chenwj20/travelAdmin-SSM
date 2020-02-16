@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cwj.ssm.dao.IOrderDao">
+    <resultMap id="orderMap" type="order">
+        <id property="id" column="id"></id>
+        <result property="orderNum" column="orderNum"></result>
+        <result property="orderTime" column="orderTime"></result>
+        <result property="orderStatus" column="orderStatus"></result>
+        <result property="peopleCount" column="peopleCount"></result>
+        <association property="product" javaType="product">
+            <id property="id" column="pid"></id>
+            <result property="productNum" column="productNum"></result>
+            <result property="productName" column="productName"></result>
+            <result property="cityName" column="cityName"></result>
+            <result property="departureTime" column="departureTime"></result>
+            <result property="productPrice" column="productPrice"></result>
+            <result property="productDesc" column="productDesc"></result>
+            <result property="productStatus" column="productStatus"></result>
+        </association>
+        <association property="member" javaType="member">
+            <id property="id" column="mid"></id>
+            <result property="name" column="mname"></result>
+            <result property="nickname" column="nickname"></result>
+            <result property="phoneNum" column="mphoneNum"></result>
+            <result property="email" column="email"></result>
+        </association>
+        <collection property="travellers" ofType="traveller">
+            <id property="id" column="tid"></id>
+            <result property="name" column="tname"></result>
+            <result property="sex" column="sex"></result>
+            <result property="phoneNum" column="tphoneNum"></result>
+            <result property="credentialsType" column="credentialsType"></result>
+            <result property="credentialsNum" column="credentialsNum"></result>
+            <result property="travellerType" column="travellerType"></result>
+        </collection>
+
+    </resultMap>
+    <select id="findAll" resultMap="orderMap">
+          select
+    o.*,m.id mid,m.name mname,m.nickname,m.phonenum mphonenum,m.email,
+    p.id pid,p.productnum,p.productname,p.cityname,p.departuretime,p.productprice,p.productstatus,
+    t.id tid,t.name tname,t.sex,t.phonenum tphonenum,t.credentialstype,t.credentialsnum,t.travellertype
+ from
+    orders o,member m,traveller t,product p,order_traveller ot
+ where
+    o.productid = p.id
+ and
+    o.memberid = m.id
+ and
+    o.id = ot.orderid
+ and
+    t.id = ot.travellerid
+    </select>
+    <select id="findById" parameterType="string"  resultMap="orderMap">
+               select
+    o.*,m.id mid,m.name mname,m.nickname,m.phonenum mphonenum,m.email,
+    p.id pid,p.productnum,p.productname,p.cityname,p.departuretime,p.productprice,p.productstatus,
+    t.id tid,t.name tname,t.sex,t.phonenum tphonenum,t.credentialstype,t.credentialsnum,t.travellertype
+ from
+    orders o,member m,traveller t,product p,order_traveller ot
+ where
+    o.productid = p.id
+ and
+    o.memberid = m.id
+ and
+    o.id = ot.orderid
+ and
+    t.id = ot.travellerid
+and o.id = #{id}
+    </select>
+</mapper>
