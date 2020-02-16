@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+           ">
+    <!--视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/pages/"/>
+        <property name="suffix" value=".jsp"/>
+     </bean>
+    <!--开启控制层注解扫描-->
+    <context:component-scan base-package="cn.cwj.ssm.controller"/>
+    <!--开启springmvc注解支持-->
+    <mvc:annotation-driven/>
+    <!--启用默认Servlet-->
+    <mvc:default-servlet-handler/>
+    <!--&lt;!&ndash; 设置静态资源不过滤&ndash;&gt;
+    <mvc:resources location="/css/" mapping="/css/**" />
+    <mvc:resources location="/img/" mapping="/img/**" />
+    <mvc:resources location="/js/" mapping="/js/**" />
+    <mvc:resources location="/plugins/" mapping="/plugins/**" />-->
+<!--    <aop:aspectj-autoproxy proxy-target-class="true"/>-->
+    <bean id="logAop" class="cn.cwj.ssm.controller.LogAop"></bean>
+    <aop:config>
+    <aop:aspect ref="logAop">
+            <aop:pointcut id="pt1" expression="execution(* cn.cwj.ssm.controller.*.*(..)) and !execution(* cn.cwj.ssm.controller.SysController.*.*(..))"/>
+            <aop:before method="aopBefore" pointcut-ref="pt1"></aop:before>
+            <aop:after method="aopAfter" pointcut-ref="pt1"></aop:after>
+        </aop:aspect>
+    </aop:config>
+</beans>
